@@ -73,6 +73,9 @@ int main(void) {
         error = scd4x_read_measurement(&co2, &temperature, &humidity);
         if (error) {
             printf("Error executing scd4x_read_measurement(): %i\n", error);
+        } else if (co2 == 0) {
+            printf("Invalid sample detected. Could be caused by strong"
+                   "mechanical vibrations\n");
         } else {
             printf("CO2: %u\n", co2);
             printf("Temperature: %.2f\n", temperature * 175.0 / 65536.0 - 45.0);
