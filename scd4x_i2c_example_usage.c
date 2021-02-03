@@ -52,7 +52,7 @@ int main(void) {
     if (error) {
         printf("Error executing scd4x_get_serial_number(): %i\n", error);
     } else {
-        printf("serial: 0x%02x%02x%02x\n", serial_0, serial_1, serial_2);
+        printf("serial: 0x%04x%04x%04x\n", serial_0, serial_1, serial_2);
     }
 
     // Start Measurement
