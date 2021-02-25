@@ -409,15 +409,12 @@ int16_t scd4x_power_down() {
 }
 
 int16_t scd4x_wake_up() {
-    int16_t error;
     uint8_t buffer[2];
     uint16_t offset = 0;
     offset = sensirion_i2c_add_command_to_buffer(&buffer[0], offset, 0x36F6);
 
-    error = sensirion_i2c_write_data(SCD4X_I2C_ADDRESS, &buffer[0], offset);
-    if (error) {
-        return error;
-    }
+    // Sensor does not acknowledge the wake-up call, error is ignored
+    (void)sensirion_i2c_write_data(SCD4X_I2C_ADDRESS, &buffer[0], offset);
     sensirion_i2c_hal_sleep_usec(20000);
     return NO_ERROR;
 }

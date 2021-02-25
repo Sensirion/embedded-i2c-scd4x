@@ -295,7 +295,7 @@ TEST (SCD4X_Tests, SCD4X_Test_power_down) {
 
     error = scd4x_wake_up();
     printf("error: %i\n", error);
-    // wakeup returns an error, but it still seems to work
+    CHECK_EQUAL_ZERO_TEXT(error, "wake-up should not forward error");
 }
 
 TEST (SCD4X_Tests, SCD4X_Test_wake_up) {
