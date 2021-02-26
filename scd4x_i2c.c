@@ -57,8 +57,8 @@ int16_t scd4x_start_periodic_measurement() {
     return NO_ERROR;
 }
 
-int16_t scd4x_read_measurement(uint16_t* co2, uint16_t* temperature,
-                               uint16_t* humidity) {
+int16_t scd4x_read_measurement_ticks(uint16_t* co2, uint16_t* temperature,
+                                     uint16_t* humidity) {
     int16_t error;
     uint8_t buffer[9];
     uint16_t offset = 0;
@@ -81,6 +81,21 @@ int16_t scd4x_read_measurement(uint16_t* co2, uint16_t* temperature,
     return NO_ERROR;
 }
 
+int16_t scd4x_read_measurement(uint16_t* co2, int32_t* temperature_m_deg_c,
+                               int32_t* humidity_m_percent_rh) {
+    int16_t error;
+    uint16_t temperature;
+    uint16_t humidity;
+
+    error = scd4x_read_measurement_ticks(co2, &temperature, &humidity);
+    if (error) {
+        return error;
+    }
+    *temperature_m_deg_c = ((21875 * (int32_t)temperature) >> 13) - 45000;
+    *humidity_m_percent_rh = ((12500 * (int32_t)humidity) >> 13);
+    return NO_ERROR;
+}
+
 int16_t scd4x_stop_periodic_measurement() {
     int16_t error;
     uint8_t buffer[2];
@@ -95,7 +110,7 @@ int16_t scd4x_stop_periodic_measurement() {
     return NO_ERROR;
 }
 
-int16_t scd4x_get_temperature_offset(uint16_t* t_offset) {
+int16_t scd4x_get_temperature_offset_ticks(uint16_t* t_offset) {
     int16_t error;
     uint8_t buffer[3];
     uint16_t offset = 0;
@@ -116,7 +131,19 @@ int16_t scd4x_get_temperature_offset(uint16_t* t_offset) {
     return NO_ERROR;
 }
 
-int16_t scd4x_set_temperature_offset(uint16_t t_offset) {
+int16_t scd4x_get_temperature_offset(int32_t* t_offset_m_deg_c) {
+    int16_t error;
+    uint16_t t_offset;
+
+    error = scd4x_get_temperature_offset_ticks(&t_offset);
+    if (error) {
+        return error;
+    }
+    *t_offset_m_deg_c = ((21875 * (int32_t)t_offset) >> 13);
+    return NO_ERROR;
+}
+
+int16_t scd4x_set_temperature_offset_ticks(uint16_t t_offset) {
     int16_t error;
     uint8_t buffer[5];
     uint16_t offset = 0;
@@ -130,6 +157,11 @@ int16_t scd4x_set_temperature_offset(uint16_t t_offset) {
     }
     sensirion_i2c_hal_sleep_usec(1000);
     return NO_ERROR;
+}
+
+int16_t scd4x_set_temperature_offset(int32_t t_offset_m_deg_c) {
+    uint16_t t_offset = (uint16_t)((t_offset_m_deg_c * 12271) >> 15);
+    return scd4x_set_temperature_offset_ticks(t_offset);
 }
 
 int16_t scd4x_get_sensor_altitude(uint16_t* sensor_altitude) {
