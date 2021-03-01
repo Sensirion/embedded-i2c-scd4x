@@ -67,8 +67,8 @@ TEST (SCD4X_Tests, SCD4X_Test_start_periodic_measurement) {
     uint16_t co2;
     uint16_t temperature;
     uint16_t humidity;
-    error = scd4x_read_measurement(&co2, &temperature, &humidity);
-    CHECK_EQUAL_ZERO_TEXT(error, "scd4x_read_measurement");
+    error = scd4x_read_measurement_ticks(&co2, &temperature, &humidity);
+    CHECK_EQUAL_ZERO_TEXT(error, "scd4x_read_measurement_ticks");
 
     printf("co2: %i\n", co2);
     printf("temperature: %i\n", temperature);
@@ -78,13 +78,13 @@ TEST (SCD4X_Tests, SCD4X_Test_start_periodic_measurement) {
     CHECK_EQUAL_ZERO_TEXT(error, "scd4x_stop_periodic_measurement");
 }
 
-TEST (SCD4X_Tests, SCD4X_Test_read_measurement_fails_in_idle) {
+TEST (SCD4X_Tests, SCD4X_Test_read_measurement_ticks_fails_in_idle) {
     int16_t error;
     uint16_t co2;
     uint16_t temperature;
     uint16_t humidity;
-    error = scd4x_read_measurement(&co2, &temperature, &humidity);
-    CHECK_TEXT(error != 0, "scd4x_read_measurement should fail in idle");
+    error = scd4x_read_measurement_ticks(&co2, &temperature, &humidity);
+    CHECK_TEXT(error != 0, "scd4x_read_measurement_ticks should fail in idle");
 }
 
 TEST (SCD4X_Tests, SCD4X_Test_stop_periodic_measurement_in_idle) {
@@ -93,23 +93,23 @@ TEST (SCD4X_Tests, SCD4X_Test_stop_periodic_measurement_in_idle) {
     CHECK_EQUAL_ZERO_TEXT(error, "scd4x_stop_periodic_measurement");
 }
 
-TEST (SCD4X_Tests, SCD4X_Test_get_temperature_offset_after_reinit) {
+TEST (SCD4X_Tests, SCD4X_Test_get_temperature_offset_ticks_after_reinit) {
     int16_t error;
     uint16_t t_offset;
-    error = scd4x_get_temperature_offset(&t_offset);
+    error = scd4x_get_temperature_offset_ticks(&t_offset);
     CHECK_EQUAL_ZERO_TEXT(error, "scd4x_get_temperature_offset");
     printf("t_offset: %i\n", t_offset);
 
     CHECK_EQUAL_TEXT(t_offset, 1498, "T offset wrong after reinit")
 }
 
-TEST (SCD4X_Tests, SCD4X_Test_set_temperature_offset) {
+TEST (SCD4X_Tests, SCD4X_Test_set_temperature_offset_ticks) {
     int16_t error;
-    error = scd4x_set_temperature_offset(0);
+    error = scd4x_set_temperature_offset_ticks(0);
     CHECK_EQUAL_ZERO_TEXT(error, "scd4x_set_temperature_offset");
 
     uint16_t t_offset;
-    error = scd4x_get_temperature_offset(&t_offset);
+    error = scd4x_get_temperature_offset_ticks(&t_offset);
     CHECK_EQUAL_ZERO_TEXT(error, "scd4x_get_temperature_offset");
     printf("t_offset: %i\n", t_offset);
 
@@ -189,8 +189,8 @@ TEST (SCD4X_Tests, SCD4X_Test_start_low_power_periodic_measurement) {
     uint16_t co2;
     uint16_t temperature;
     uint16_t humidity;
-    error = scd4x_read_measurement(&co2, &temperature, &humidity);
-    CHECK_EQUAL_ZERO_TEXT(error, "scd4x_read_measurement");
+    error = scd4x_read_measurement_ticks(&co2, &temperature, &humidity);
+    CHECK_EQUAL_ZERO_TEXT(error, "scd4x_read_measurement_ticks");
 
     printf("co2: %i\n", co2);
     printf("temperature: %i\n", temperature);
@@ -260,8 +260,8 @@ TEST (SCD4X_Tests, SCD4X_Test_measure_single_shot) {
     uint16_t co2;
     uint16_t temperature;
     uint16_t humidity;
-    error = scd4x_read_measurement(&co2, &temperature, &humidity);
-    CHECK_EQUAL_ZERO_TEXT(error, "scd4x_read_measurement");
+    error = scd4x_read_measurement_ticks(&co2, &temperature, &humidity);
+    CHECK_EQUAL_ZERO_TEXT(error, "scd4x_read_measurement_ticks");
 
     printf("co2: %i\n", co2);
     printf("temperature: %i\n", temperature);
@@ -276,8 +276,8 @@ TEST (SCD4X_Tests, SCD4X_Test_measure_single_shot_rht_only) {
     uint16_t co2;
     uint16_t temperature;
     uint16_t humidity;
-    error = scd4x_read_measurement(&co2, &temperature, &humidity);
-    CHECK_EQUAL_ZERO_TEXT(error, "scd4x_read_measurement");
+    error = scd4x_read_measurement_ticks(&co2, &temperature, &humidity);
+    CHECK_EQUAL_ZERO_TEXT(error, "scd4x_read_measurement_ticks");
 
     printf("co2: %i\n", co2);
     printf("temperature: %i\n", temperature);
@@ -295,7 +295,7 @@ TEST (SCD4X_Tests, SCD4X_Test_power_down) {
 
     error = scd4x_wake_up();
     printf("error: %i\n", error);
-    // wakeup returns an error, but it still seems to work
+    CHECK_EQUAL_ZERO_TEXT(error, "wake-up should not forward error");
 }
 
 TEST (SCD4X_Tests, SCD4X_Test_wake_up) {

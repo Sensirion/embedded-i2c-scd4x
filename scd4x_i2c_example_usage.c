@@ -45,6 +45,11 @@ int main(void) {
 
     sensirion_i2c_hal_init();
 
+    // Clean up potential SCD40 states
+    scd4x_wake_up();
+    scd4x_stop_periodic_measurement();
+    scd4x_reinit();
+
     uint16_t serial_0;
     uint16_t serial_1;
     uint16_t serial_2;
@@ -63,13 +68,15 @@ int main(void) {
                error);
     }
 
+    printf("Waiting for first measurement... (5 sec)\n");
+
     for (;;) {
         // Read Measurement
         sensirion_i2c_hal_sleep_usec(5000000);
 
         uint16_t co2;
-        uint16_t temperature;
-        uint16_t humidity;
+        int32_t temperature;
+        int32_t humidity;
         error = scd4x_read_measurement(&co2, &temperature, &humidity);
         if (error) {
             printf("Error executing scd4x_read_measurement(): %i\n", error);
@@ -77,8 +84,8 @@ int main(void) {
             printf("Invalid sample detected, skipping.\n");
         } else {
             printf("CO2: %u\n", co2);
-            printf("Temperature: %.2f\n", temperature * 175.0 / 65536.0 - 45.0);
-            printf("Humidity: %.2f\n", humidity * 100.0 / 65536.0);
+            printf("Temperature: %d m°C\n", temperature);
+            printf("Humidity: %d mRH\n", humidity);
         }
     }
 
