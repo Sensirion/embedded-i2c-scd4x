@@ -360,7 +360,7 @@ int16_t scd4x_perform_self_test(uint16_t* sensor_status) {
         return error;
     }
 
-    sensirion_i2c_hal_sleep_usec(5500000);
+    sensirion_i2c_hal_sleep_usec(10000000);
 
     error = sensirion_i2c_read_data_inplace(SCD4X_I2C_ADDRESS, &buffer[0], 2);
     if (error) {
@@ -408,7 +408,7 @@ int16_t scd4x_measure_single_shot() {
     if (error) {
         return error;
     }
-    sensirion_i2c_hal_sleep_usec(1350000);
+    sensirion_i2c_hal_sleep_usec(5000000);
     return NO_ERROR;
 }
 
