@@ -1,6 +1,6 @@
 # Sensirion Embedded I2C SCD4x Driver
 
-This is a generic embedded driver for the [Sensirion SCD4x Carbon Dioxide Sensor](https://www.sensirion.com/environmental-sensors/carbon-dioxide-sensors/carbon-dioxide-sensor-scd40/).
+This is a generic embedded driver for the [Sensirion SCD4x Carbon Dioxide Sensor](https://www.sensirion.com/scd4x/).
 It enables developers to communicate with the SCD4x sensor on different hardware platforms by only adapting the I2C communication related source files.
 
 [<center><img src="images/SCD4x.png" width="300px"></center>](https://sensirion.com/my-scd-ek)
