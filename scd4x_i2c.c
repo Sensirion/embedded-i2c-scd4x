@@ -290,10 +290,11 @@ int16_t scd4x_start_low_power_periodic_measurement() {
     return sensirion_i2c_write_data(SCD4X_I2C_ADDRESS, &buffer[0], offset);
 }
 
-int16_t scd4x_get_data_ready_status(uint16_t* data_ready) {
+int16_t scd4x_get_data_ready_flag(bool* data_ready_flag) {
     int16_t error;
     uint8_t buffer[3];
     uint16_t offset = 0;
+    uint16_t local_data_ready = 0;
     offset = sensirion_i2c_add_command_to_buffer(&buffer[0], offset, 0xE4B8);
 
     error = sensirion_i2c_write_data(SCD4X_I2C_ADDRESS, &buffer[0], offset);
@@ -307,7 +308,8 @@ int16_t scd4x_get_data_ready_status(uint16_t* data_ready) {
     if (error) {
         return error;
     }
-    *data_ready = sensirion_common_bytes_to_uint16_t(&buffer[0]);
+    local_data_ready = sensirion_common_bytes_to_uint16_t(&buffer[0]);
+    *data_ready_flag = (local_data_ready & 0x07FF) != 0;
     return NO_ERROR;
 }
 
