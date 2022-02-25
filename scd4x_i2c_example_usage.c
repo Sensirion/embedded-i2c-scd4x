@@ -72,7 +72,16 @@ int main(void) {
 
     for (;;) {
         // Read Measurement
-        sensirion_i2c_hal_sleep_usec(5000000);
+        sensirion_i2c_hal_sleep_usec(100000);
+        bool data_ready_flag = false;
+        error = scd4x_get_data_ready_flag(&data_ready_flag);
+        if (error) {
+            printf("Error executing scd4x_get_data_ready_flag(): %i\n", error);
+            continue;
+        }
+        if (!data_ready_flag) {
+            continue;
+        }
 
         uint16_t co2;
         int32_t temperature;

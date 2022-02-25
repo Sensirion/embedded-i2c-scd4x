@@ -200,11 +200,11 @@ TEST (SCD4X_Tests, SCD4X_Test_start_low_power_periodic_measurement) {
     CHECK_EQUAL_ZERO_TEXT(error, "scd4x_stop_periodic_measurement");
 }
 
-TEST (SCD4X_Tests, SCD4X_Test_get_data_ready_status) {
+TEST (SCD4X_Tests, SCD4X_Test_get_data_ready_flag) {
     int16_t error;
-    uint16_t data_ready;
-    error = scd4x_get_data_ready_status(&data_ready);
-    CHECK_EQUAL_ZERO_TEXT(error, "scd4x_get_data_ready_status");
+    bool data_ready;
+    error = scd4x_get_data_ready_flag(&data_ready);
+    CHECK_EQUAL_ZERO_TEXT(error, "scd4x_get_data_ready_flag");
     printf("data_ready: %i\n", data_ready);
 }
 

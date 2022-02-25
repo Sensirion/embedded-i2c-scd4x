@@ -59,7 +59,7 @@ int16_t scd4x_start_periodic_measurement(void);
  * scd4x_read_measurement_ticks() - read sensor output. The measurement data can
  * only be read out once per signal update interval as the buffer is emptied
  * upon read-out. If no data is available in the buffer, the sensor returns a
- * NACK. To avoid a NACK response the get_data_ready_status can be issued to
+ * NACK. To avoid a NACK response the get_data_ready_flag can be issued to
  * check data status. The I2C master can abort the read transfer with a NACK
  * followed by a STOP condition after any data byte if the user is not
  * interested in subsequent data.
@@ -258,14 +258,14 @@ int16_t scd4x_set_automatic_self_calibration(uint16_t asc_enabled);
 int16_t scd4x_start_low_power_periodic_measurement(void);
 
 /**
- * scd4x_get_data_ready_status() - Check whether new measurement data is
+ * scd4x_get_data_ready_flag() - Check whether new measurement data is
  * available for read-out.
  *
- * @param data_ready If last 11 bits are 0 data not ready, else data ready
+ * @param data_ready_flag True if data available, otherwise false.
  *
  * @return 0 on success, an error code otherwise
  */
-int16_t scd4x_get_data_ready_status(uint16_t* data_ready);
+int16_t scd4x_get_data_ready_flag(bool* data_ready_flag);
 
 /**
  * scd4x_persist_settings() - Configuration settings such as the temperature
