@@ -12,7 +12,6 @@ static int addr = 0x62;
 // I2C Pins
 static uint sda_pin = 16;
 static uint scl_pin = 17;
- 
 
 // This is the main entry for your c application. U
 // is
@@ -50,14 +49,15 @@ int main() {
 
     while (1) {
 
-        // Check if data is ready to read 
+        // Check if data is ready to read
         bool dataReady;
         while (dataReady == false) {
 
             status1 = scd4x_get_data_ready_flag(&dataReady);
         }
 
-        // Get the ticks. The scd4x_read_measurement function is giving incorrect data due to the arthimetic
+        // Get the ticks. The scd4x_read_measurement function is giving
+        // incorrect data due to the arthimetic
         uint16_t co2;
         uint16_t temp;
         uint16_t humidity;
@@ -70,10 +70,8 @@ int main() {
 
         // Print results to terminal (output)
         printf("C:%d,T:%d,H:%d", co2, tempInFarenheit, humidityPercent);
-         
+
         // Sleep for 5 seconds.
         sleep_ms(5000);
     }
 }
-
- 
