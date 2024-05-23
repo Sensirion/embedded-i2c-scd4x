@@ -13,3 +13,4 @@ jobs:
     uses: sensirion/.github/.github/workflows/driver.c.check.yml@main
     with:
       examples: '["."]'
+      run-environment: "ubuntu-20.04"
