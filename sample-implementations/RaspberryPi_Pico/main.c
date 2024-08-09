@@ -3,7 +3,7 @@
 #include "hardware/i2c.h"
 #include "pico/binary_info.h"
 #include "pico/stdlib.h"
-#include "scd4x_i2c.h"
+#include "../../scd4x_i2c.h"
 #include <stdio.h>
 
 /// I2C address
@@ -45,7 +45,7 @@ int main() {
     scd4x_get_serial_number(&one, &two, &three);
 
     // Start the readings.
-    status1 = scd4x_start_periodic_measurement();
+    status = scd4x_start_periodic_measurement();
 
     while (1) {
 
@@ -53,7 +53,7 @@ int main() {
         bool dataReady;
         while (dataReady == false) {
 
-            status1 = scd4x_get_data_ready_flag(&dataReady);
+            status = scd4x_get_data_ready_flag(&dataReady);
         }
 
         // Get the ticks. The scd4x_read_measurement function is giving
@@ -61,7 +61,7 @@ int main() {
         uint16_t co2;
         uint16_t temp;
         uint16_t humidity;
-        status1 = scd4x_read_measurement_ticks(&co2, &temp, &humidity);
+        status = scd4x_read_measurement_ticks(&co2, &temp, &humidity);
 
         // Arithemtic to change raw data into information
         int tempInCelsius = -45 + 175 * temp / 65536;

@@ -30,9 +30,9 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include "sensirion_common.h"
-#include "sensirion_config.h"
-#include "sensirion_i2c_hal.h"
+#include "../../sensirion_common.h"
+#include "../../sensirion_config.h"
+#include "../../sensirion_i2c_hal.h"
 
 /*
  * INSTRUCTIONS
