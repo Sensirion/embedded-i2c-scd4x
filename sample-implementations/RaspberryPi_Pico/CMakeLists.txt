@@ -6,6 +6,7 @@ pico_sdk_init()
 
 set(CMAKE_C_STANDARD 11)
 set(CMAKE_CXX_STANDARD 17)
+add_compile_options(-Wall -Wextra -Werror)
 add_executable(main
         main.c
         ../../sensirion_i2c.c
@@ -16,6 +17,7 @@ add_executable(main
 # pull in common dependencies and additional i2c hardware support
 target_link_libraries(main pico_stdlib hardware_i2c)
 
+# use USB for stdin/stdout, rather than using UART
 pico_enable_stdio_usb(main 1)
 pico_enable_stdio_uart(main 0)
 
