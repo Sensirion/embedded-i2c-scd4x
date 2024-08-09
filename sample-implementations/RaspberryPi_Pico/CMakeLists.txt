@@ -8,18 +8,17 @@ set(CMAKE_C_STANDARD 11)
 set(CMAKE_CXX_STANDARD 17)
 add_executable(main
         main.c
-        sensirion_i2c.c
-        sensirion_i2c.hal.c
-        scd4x_i2c.c
-        sensirion_common.c)
+        ../../sensirion_i2c.c
+        sensirion_i2c_hal.c
+        ../../scd4x_i2c.c
+        ../../sensirion_common.c)
 
 # pull in common dependencies and additional i2c hardware support
 target_link_libraries(main pico_stdlib hardware_i2c)
 
 pico_enable_stdio_usb(main 1)
-
 pico_enable_stdio_uart(main 0)
 
 # create map/bin/hex file etc.
 pico_add_extra_outputs(main)
- 
+
