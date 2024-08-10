@@ -2,8 +2,8 @@ SCD4x on the Raspberry Pi Pico
 ==============================
 <img alt="Pico W with an SCD41 connected" src="hardware.jpg" height="400"/>
 
-In this example, an SCD41 is connected to a Raspberry Pi Pico W on GPIO pins 16
-(I2C0 SDA) and 17 (I2C0 SCL). The same code will work for any variant of the
+In this example, an SCD41 is connected to a Raspberry Pi Pico W on GPIO pins 12
+(I2C0 SDA) and 13 (I2C0 SCL). The same code will work for any variant of the
 Pico.
 
 The following shell session is from an Ubuntu machine that had the Pico plugged
