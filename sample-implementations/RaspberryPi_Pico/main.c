@@ -1,18 +1,24 @@
-#include "hardware/i2c.h"
-#include "pico/binary_info.h"
-#include "pico/stdlib.h"
 #include "../../scd4x_i2c.h"
+
+#include <hardware/i2c.h>
+#include <pico/stdlib.h>
+#include <pico/time.h>
+
 #include <stdio.h>
 
 int main(void) {
     stdio_init_all();
 
-    // Setup I2C using GPIO pins 16 & 17.
+    // Give us a few seconds to start viewing the output if we're plugged into
+    // the computer over USB.
+    sleep_ms(3000);
+
+    // Setup I2C using GPIO pins 12 & 13.
     const uint desired_clock_hz = 400 * 1000;
     const uint actual_baudrate = i2c_init(i2c_default, desired_clock_hz);
     printf("The I2C baudrate is %u Hz\n", actual_baudrate);
-    const uint sda_pin = 16;
-    const uint scl_pin = 17;
+    const uint sda_pin = 12;
+    const uint scl_pin = 13;
     gpio_set_function(sda_pin, GPIO_FUNC_I2C);
     gpio_set_function(scl_pin, GPIO_FUNC_I2C);
     gpio_pull_up(sda_pin);
@@ -73,7 +79,7 @@ int main(void) {
         const float temperatureFahrenheit = temperatureCelsius * 1.8f + 32;
         const float humidityPercent = humidityRaw / 1000.0f;
 
-        printf("CO2: %d ppm, Temperature: %.1f°C (%.1f°F), Humidity: %.1f%%\n",
+        printf("CO2: %d ppm, Temperature: %.1f C (%.1f F), Humidity: %.1f%%\n",
             co2Ppm, temperatureCelsius, temperatureFahrenheit, humidityPercent);
     }
 }
