@@ -8,6 +8,3 @@ on:
 jobs:
   driver-quality:
     uses: sensirion/.github/.github/workflows/driver.c.check.yml@main
-
-  code-generation-check:
-    uses: sensirion/.github/.github/workflows/driver.generated.metadata_check.yml@main
