@@ -62,18 +62,18 @@ int main(void) {
     error = scd4x_wake_up();
     if (error != NO_ERROR) {
         printf("error executing wake_up(): %i\n", error);
-        return error;
     }
+
     error = scd4x_stop_periodic_measurement();
     if (error != NO_ERROR) {
         printf("error executing stop_periodic_measurement(): %i\n", error);
-        return error;
     }
+
     error = scd4x_reinit();
     if (error != NO_ERROR) {
         printf("error executing reinit(): %i\n", error);
-        return error;
     }
+
     // Read out information about the sensor
     error = scd4x_get_serial_number(serial_number, 3);
     if (error != NO_ERROR) {
