@@ -57,7 +57,7 @@ void sensirion_i2c_hal_init(void) {
 void sensirion_i2c_hal_free(void) {
 }
 
-int8_t sensirion_i2c_hal_read(uint8_t address, uint8_t* data, uint16_t count) {
+int8_t sensirion_i2c_hal_read(uint8_t address, uint8_t* data, uint8_t count) {
     struct i2c_master_packet packet = {
         .address = address,
         .data_length = count,
@@ -69,7 +69,7 @@ int8_t sensirion_i2c_hal_read(uint8_t address, uint8_t* data, uint16_t count) {
 }
 
 int8_t sensirion_i2c_hal_write(uint8_t address, const uint8_t* data,
-                               uint16_t count) {
+                               uint8_t count) {
     struct i2c_master_packet packet = {
         .address = address,
         .data_length = count,

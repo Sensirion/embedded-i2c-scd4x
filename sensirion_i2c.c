@@ -177,6 +177,19 @@ uint16_t sensirion_i2c_add_command_to_buffer(uint8_t* buffer, uint16_t offset,
     return offset;
 }
 
+uint16_t sensirion_i2c_add_command16_to_buffer(uint8_t* buffer, uint16_t offset,
+                                               uint16_t command) {
+    buffer[offset++] = (uint8_t)((command & 0xFF00) >> 8);
+    buffer[offset++] = (uint8_t)((command & 0x00FF) >> 0);
+    return offset;
+}
+
+uint16_t sensirion_i2c_add_command8_to_buffer(uint8_t* buffer, uint16_t offset,
+                                              uint8_t command) {
+    buffer[offset++] = command;
+    return offset;
+}
+
 uint16_t sensirion_i2c_add_uint32_t_to_buffer(uint8_t* buffer, uint16_t offset,
                                               uint32_t data) {
     buffer[offset++] = (uint8_t)((data & 0xFF000000) >> 24);
@@ -238,7 +251,7 @@ uint16_t sensirion_i2c_add_float_to_buffer(uint8_t* buffer, uint16_t offset,
 }
 
 uint16_t sensirion_i2c_add_bytes_to_buffer(uint8_t* buffer, uint16_t offset,
-                                           uint8_t* data,
+                                           const uint8_t* data,
                                            uint16_t data_length) {
     uint16_t i;
 

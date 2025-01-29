@@ -182,6 +182,39 @@ uint16_t sensirion_i2c_add_command_to_buffer(uint8_t* buffer, uint16_t offset,
                                              uint16_t command);
 
 /**
+ * sensirion_i2c_add_command16_to_buffer() - Add a command to the buffer at
+ *               the specified offset. This function is equivalent to the
+ *               function sensirion_i2c_add_command_to_buffer().
+ *
+ * @param buffer  Pointer to buffer in which the write frame will be prepared.
+ *                Caller needs to make sure that there is enough space after
+ *                offset left to write the data into the buffer.
+ * @param offset  Offset of the next free byte in the buffer.
+ * @param command Command to be written into the buffer.
+ *
+ * @return        Offset of next free byte in the buffer after writing the data.
+ */
+uint16_t sensirion_i2c_add_command16_to_buffer(uint8_t* buffer, uint16_t offset,
+                                               uint16_t command);
+
+/**
+ * sensirion_i2c_add_command8_to_buffer() - Add a command to the buffer at
+ *               offset. Adds one bytes command to the buffer.
+ *               This is used for sensor that only take one command byte such as
+ *               SHT.
+ *
+ * @param buffer  Pointer to buffer in which the write frame will be prepared.
+ *                Caller needs to make sure that there is enough space after
+ *                offset left to write the data into the buffer.
+ * @param offset  Offset of the next free byte in the buffer.
+ * @param command Command to be written into the buffer.
+ *
+ * @return        Offset of next free byte in the buffer after writing the data.
+ */
+uint16_t sensirion_i2c_add_command8_to_buffer(uint8_t* buffer, uint16_t offset,
+                                              uint8_t command);
+
+/**
  * sensirion_i2c_add_uint32_t_to_buffer() - Add a uint32_t to the buffer at
  *                                          offset. Adds 6 bytes to the buffer.
  *
@@ -274,7 +307,8 @@ uint16_t sensirion_i2c_add_float_to_buffer(uint8_t* buffer, uint16_t offset,
  *                    data.
  */
 uint16_t sensirion_i2c_add_bytes_to_buffer(uint8_t* buffer, uint16_t offset,
-                                           uint8_t* data, uint16_t data_length);
+                                           const uint8_t* data,
+                                           uint16_t data_length);
 
 /**
  * sensirion_i2c_write_data() - Writes data to the Sensor.
