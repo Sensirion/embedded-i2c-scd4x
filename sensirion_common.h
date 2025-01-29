@@ -51,6 +51,11 @@ extern "C" {
 #define SENSIRION_MAX_BUFFER_WORDS 32
 
 /**
+ * Enum to describe the type of an integer
+ */
+typedef enum { BYTE = 1, SHORT = 2, INTEGER = 4, LONG_INTEGER = 8 } INT_TYPE;
+
+/**
  * sensirion_common_bytes_to_int16_t() - Convert an array of bytes to an int16_t
  *
  * Convert an array of bytes received from the sensor in big-endian/MSB-first
@@ -173,6 +178,17 @@ void sensirion_common_float_to_bytes(const float value, uint8_t* bytes);
  */
 void sensirion_common_copy_bytes(const uint8_t* source, uint8_t* destination,
                                  uint16_t data_length);
+
+/**
+ * sensirion_common_to_integer() - Copy bytes from byte array to integer.
+ *
+ * @param source      Array of bytes to be copied.
+ * @param int_value Pointer to integer of bytes to be copied to.
+ * @param int_type Type (size) of the integer to be copied.
+ * @param data_length Number of bytes to copy.
+ */
+void sensirion_common_to_integer(const uint8_t* source, uint8_t* destination,
+                                 INT_TYPE int_type, uint8_t data_length);
 
 #ifdef __cplusplus
 }
