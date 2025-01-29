@@ -186,12 +186,24 @@ TEST (SCD4X_Tests, test_measure_single_shot_rht_only1) {
     int16_t local_error = 0;
     local_error = scd4x_measure_single_shot_rht_only();
     CHECK_EQUAL_ZERO_TEXT(local_error, "measure_single_shot_rht_only");
+    local_error = scd4x_read_measurement_raw(&co2_concentration, &temperature,
+                                             &relative_humidity);
+    CHECK_EQUAL_ZERO_TEXT(local_error, "read_measurement_raw");
+    printf("co2_concentration: %u ", co2_concentration);
+    printf("temperature: %u ", temperature);
+    printf("relative_humidity: %u\n", relative_humidity);
 }
 
 TEST (SCD4X_Tests, test_measure_single_shot1) {
     int16_t local_error = 0;
     local_error = scd4x_measure_single_shot();
     CHECK_EQUAL_ZERO_TEXT(local_error, "measure_single_shot");
+    local_error = scd4x_read_measurement_raw(&co2_concentration, &temperature,
+                                             &relative_humidity);
+    CHECK_EQUAL_ZERO_TEXT(local_error, "read_measurement_raw");
+    printf("co2_concentration: %u ", co2_concentration);
+    printf("temperature: %u ", temperature);
+    printf("relative_humidity: %u\n", relative_humidity);
 }
 
 TEST (SCD4X_Tests, test_start_periodic_measurement1) {
@@ -205,6 +217,14 @@ TEST (SCD4X_Tests, test_start_periodic_measurement1) {
     uint16_t data_ready_status = 0;
     local_error = scd4x_start_periodic_measurement();
     CHECK_EQUAL_ZERO_TEXT(local_error, "start_periodic_measurement");
+    // wait for measurement
+    sensirion_hal_sleep_us(5000000);
+    local_error = scd4x_get_data_ready_status(&arg_0);
+    CHECK_EQUAL_ZERO_TEXT(local_error, "get_data_ready_status");
+    printf("arg_0: %d\n", arg_0);
+    local_error = scd4x_get_data_ready_status_raw(&data_ready_status);
+    CHECK_EQUAL_ZERO_TEXT(local_error, "get_data_ready_status_raw");
+    printf("data_ready_status: %u\n", data_ready_status);
     local_error = scd4x_read_measurement_raw(&co2_concentration, &temperature,
                                              &relative_humidity);
     CHECK_EQUAL_ZERO_TEXT(local_error, "read_measurement_raw");
@@ -221,12 +241,6 @@ TEST (SCD4X_Tests, test_start_periodic_measurement1) {
     local_error = scd4x_get_ambient_pressure_raw(&ambient_pressure);
     CHECK_EQUAL_ZERO_TEXT(local_error, "get_ambient_pressure_raw");
     printf("ambient_pressure: %u\n", ambient_pressure);
-    local_error = scd4x_get_data_ready_status(&arg_0);
-    CHECK_EQUAL_ZERO_TEXT(local_error, "get_data_ready_status");
-    printf("arg_0: %d\n", arg_0);
-    local_error = scd4x_get_data_ready_status_raw(&data_ready_status);
-    CHECK_EQUAL_ZERO_TEXT(local_error, "get_data_ready_status_raw");
-    printf("data_ready_status: %u\n", data_ready_status);
     local_error = scd4x_stop_periodic_measurement();
     CHECK_EQUAL_ZERO_TEXT(local_error, "stop_periodic_measurement");
 }
@@ -244,10 +258,8 @@ TEST (SCD4X_Tests, test_start_low_power_periodic_measurement1) {
     CHECK_EQUAL_ZERO_TEXT(local_error, "start_low_power_periodic_measurement");
     local_error = scd4x_read_measurement_raw(&co2_concentration, &temperature,
                                              &relative_humidity);
-    CHECK_EQUAL_ZERO_TEXT(local_error, "read_measurement_raw");
-    printf("co2_concentration: %u ", co2_concentration);
-    printf("temperature: %u ", temperature);
-    printf("relative_humidity: %u\n", relative_humidity);
+    // as we do not wait the read measurement command returns with nack/error
+    CHECK_EQUAL_TEXT(local_error, 1, "read_measurement_raw");
     local_error = scd4x_set_ambient_pressure(101300);
     CHECK_EQUAL_ZERO_TEXT(local_error, "set_ambient_pressure");
     local_error = scd4x_get_ambient_pressure(&a_ambient_pressure);
