@@ -43,12 +43,11 @@
 
 #define sensirion_hal_sleep_us sensirion_i2c_hal_sleep_usec
 
-void print_ushort_array(uint16_t* array, uint16_t len) {
-    uint16_t i = 0;
-    printf("0x");
-    for (; i < len; i++) {
-        printf("%04x", array[i]);
-    }
+void convert_and_print_serial(uint16_t* serial_raw) {
+    uint64_t serial_as_int = 0;
+    sensirion_common_to_integer((uint8_t*)serial_raw, (uint8_t*)&serial_as_int,
+                                LONG_INTEGER, 6);
+    printf("0x%" PRIx64, serial_as_int);
 }
 
 int main(void) {
@@ -81,7 +80,7 @@ int main(void) {
         return error;
     }
     printf("serial number: ");
-    print_ushort_array(serial_number, 3);
+    convert_and_print_serial(serial_number);
     printf("\n");
     //
     // If temperature offset and/or sensor altitude compensation
