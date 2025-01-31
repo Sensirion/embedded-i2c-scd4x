@@ -99,8 +99,8 @@ int main(void) {
     //
     bool data_ready = false;
     uint16_t co2_concentration = 0;
-    uint16_t temperature = 0;
-    uint16_t relative_humidity = 0;
+    int32_t temperature = 0;
+    int32_t relative_humidity = 0;
     uint16_t repetition = 0;
     for (repetition = 0; repetition < 50; repetition++) {
         //
@@ -124,17 +124,17 @@ int main(void) {
                 continue;
             }
         }
-        error = scd4x_read_measurement_raw(&co2_concentration, &temperature,
-                                           &relative_humidity);
+        error = scd4x_read_measurement(&co2_concentration, &temperature,
+                                       &relative_humidity);
         if (error != NO_ERROR) {
-            printf("error executing read_measurement_raw(): %i\n", error);
+            printf("error executing read_measurement(): %i\n", error);
             continue;
         }
         //
         // Print results in physical units.
         printf("CO2 concentration [ppm]: %u\n", co2_concentration);
-        printf("Temperature ticks: %u\n", temperature);
-        printf("Humidity ticks: %u\n", relative_humidity);
+        printf("Temperature [m°C] : %i\n", temperature);
+        printf("Humidity [mRH]: %i\n", relative_humidity);
     }
 
     return NO_ERROR;

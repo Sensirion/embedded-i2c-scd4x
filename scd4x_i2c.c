@@ -159,6 +159,20 @@ int16_t scd4x_read_measurement_raw(uint16_t* co2_concentration,
     return local_error;
 }
 
+int16_t scd4x_read_measurement(uint16_t* co2, int32_t* temperature_m_deg_c,
+                               int32_t* humidity_m_percent_rh) {
+    int16_t error;
+    uint16_t temperature;
+    uint16_t humidity;
+    error = scd4x_read_measurement_raw(co2, &temperature, &humidity);
+    if (error) {
+        return error;
+    }
+    *temperature_m_deg_c = ((21875 * (int32_t)temperature) >> 13) - 45000;
+    *humidity_m_percent_rh = ((12500 * (int32_t)humidity) >> 13);
+    return NO_ERROR;
+}
+
 int16_t scd4x_stop_periodic_measurement() {
     int16_t local_error = NO_ERROR;
     uint8_t* buffer_ptr = communication_buffer;
