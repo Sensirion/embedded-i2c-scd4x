@@ -19,8 +19,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-Note that there are breaking changes compared to 0.1.0
-- You need to call scd4x_init(SCD41_I2C_ADDR_62); befor sending any command to set the I2c address of the sensor
+Note that there are breaking changes:
+- You need to call scd4x_init(SCD41_I2C_ADDR_62); before sending any command t
 - all methods that have been named xxxTicks are now named xxxRaw
 - getDataReadyFlag has been renamed to getDataReadyStatus
 - data type for parameter count in HAL implementation has been changed from uint16_t to uint8_t 
@@ -31,13 +31,30 @@ Note that there are breaking changes compared to 0.1.0
 - removed read_measurement convenience method - see bugfix 1.0.1 where it is added again
 
 
-## [0.1.0] - 2021-2-1
+## [0.2.1] - 2021-04-30
+
+### Changed
+
+* Increase timing for single shot from 1350ms to 5000ms
+* Increase timing for self test from 5500ms to 10000ms
+
+
+## [0.2.0] - 2021-03-01
 
 ### Added
+- Convenience interfaces taking care of unit conversion to and from ticks.
 
-- Initial version
-- Check latest 0.x.x version for changelog prior to version 1.0.0
+### Fixed
+- wake-up interface handles missing ACK from sensor on wake up.
+
+
+## [0.1.0] - 2021-01-28
+
+Initial release
+
 
 [Unreleased]: https://github.com/Sensirion/embedded-i2c-scd4x/compare/1.0.0...HEAD
-[1.0.0]: https://github.com/Sensirion/embedded-i2c-scd4x/compare/0.1.0...1.0.0
+[1.0.0]: https://github.com/Sensirion/embedded-i2c-scd4x/compare/0.2.1...1.0.0
+[0.2.1]: https://github.com/Sensirion/embedded-i2c-scd4x/compare/0.2.0...0.2.1
+[0.2.0]: https://github.com/Sensirion/embedded-i2c-scd4x/compare/0.1.0...0.2.0
 [0.1.0]: https://github.com/Sensirion/embedded-i2c-scd4x/releases/tag/0.1.0
