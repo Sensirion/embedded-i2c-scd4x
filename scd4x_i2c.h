@@ -196,6 +196,21 @@ int16_t scd4x_read_measurement_raw(uint16_t* co2_concentration,
                                    uint16_t* relative_humidity);
 
 /**
+ * @brief Read sensor output and convert to pyhsical unit.
+ *
+ * See @ref scd4x_read_measurement_raw() for more details.
+ *
+ * @param[out] co2 CO₂ concentration in ppm
+ * @param[out] temperature_m_deg_c Temperature in milli degrees celsius (°C *
+ * 1000)
+ * @param[out] humidity_m_percent_rh Relative humidity in milli percent RH
+ * (%RH * 1000)
+ * @return 0 on success, an error code otherwise
+ */
+int16_t scd4x_read_measurement(uint16_t* co2, int32_t* temperature_m_deg_c,
+                               int32_t* humidity_m_percent_rh);
+
+/**
  * @brief Stop periodic measurement to change the sensor configuration or to
  * save power.
  *
