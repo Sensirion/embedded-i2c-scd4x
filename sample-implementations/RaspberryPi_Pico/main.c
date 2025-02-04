@@ -24,6 +24,9 @@ int main(void) {
     gpio_pull_up(sda_pin);
     gpio_pull_up(scl_pin);
 
+    // Initialize driver with i2c address 
+    scd4x_init(SCD41_I2C_ADDR_62);
+
     int status;
 
     // Stop any ongoing measurement.
@@ -34,15 +37,13 @@ int main(void) {
     }
 
     // Get serial number.
-    uint16_t one;
-    uint16_t two;
-    uint16_t three;
-    status = scd4x_get_serial_number(&one, &two, &three);
+    uint16_t serial_number[3] = {0};
+    status = scd4x_get_serial_number(serial_number, 3);
     if (status) {
         printf("Unable to get sensor serial number. Error: %d\n", status);
         return status;
     }
-    printf("Sensor serial number is: 0x%x 0x%x 0x%x\n", (int)one, (int)two, (int)three);
+    printf("Sensor serial number is: 0x%x 0x%x 0x%x\n", (int)serial_number[0], (int)serial_number[1], (int)serial_number[2]);
 
     // Start the readings.
     status = scd4x_start_periodic_measurement();
@@ -57,9 +58,9 @@ int main(void) {
         bool dataReady;
         do {
             sleep_ms(10);
-            status = scd4x_get_data_ready_flag(&dataReady);
+            status = scd4x_get_data_ready_status(&dataReady);
             if (status) {
-                printf("Unable to get sensor readiness flag. Error %d.\n", status);
+                printf("Unable to get sensor readiness status. Error %d.\n", status);
                 return status;
             }
         } while (!dataReady);
