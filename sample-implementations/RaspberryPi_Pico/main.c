@@ -24,7 +24,7 @@ int main(void) {
     gpio_pull_up(sda_pin);
     gpio_pull_up(scl_pin);
 
-    // Initialize driver with i2c address 
+    // Initialize driver with i2c address
     scd4x_init(SCD41_I2C_ADDR_62);
 
     int status;
@@ -43,7 +43,8 @@ int main(void) {
         printf("Unable to get sensor serial number. Error: %d\n", status);
         return status;
     }
-    printf("Sensor serial number is: 0x%x 0x%x 0x%x\n", (int)serial_number[0], (int)serial_number[1], (int)serial_number[2]);
+    printf("Sensor serial number is: 0x%x 0x%x 0x%x\n", (int)serial_number[0],
+           (int)serial_number[1], (int)serial_number[2]);
 
     // Start the readings.
     status = scd4x_start_periodic_measurement();
@@ -60,15 +61,16 @@ int main(void) {
             sleep_ms(10);
             status = scd4x_get_data_ready_status(&dataReady);
             if (status) {
-                printf("Unable to get sensor readiness status. Error %d.\n", status);
+                printf("Unable to get sensor readiness status. Error %d.\n",
+                       status);
                 return status;
             }
         } while (!dataReady);
 
         // Read the measurement data and convert it to common units.
-        uint16_t co2Raw; // ppm
-        int32_t temperatureRaw; // millicelsius
-        int32_t humidityRaw; // millipercent
+        uint16_t co2Raw;         // ppm
+        int32_t temperatureRaw;  // millicelsius
+        int32_t humidityRaw;     // millipercent
         status = scd4x_read_measurement(&co2Raw, &temperatureRaw, &humidityRaw);
         if (status) {
             printf("Unable to read measurement data. Error: %d\n", status);
@@ -81,6 +83,7 @@ int main(void) {
         const float humidityPercent = humidityRaw / 1000.0f;
 
         printf("CO2: %d ppm, Temperature: %.1f C (%.1f F), Humidity: %.1f%%\n",
-            co2Ppm, temperatureCelsius, temperatureFahrenheit, humidityPercent);
+               co2Ppm, temperatureCelsius, temperatureFahrenheit,
+               humidityPercent);
     }
 }
