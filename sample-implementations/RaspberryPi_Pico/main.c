@@ -1,77 +1,89 @@
+#include "../../scd4x_i2c.h"
 
+#include <hardware/i2c.h>
+#include <pico/stdlib.h>
+#include <pico/time.h>
 
-#include "hardware/i2c.h"
-#include "pico/binary_info.h"
-#include "pico/stdlib.h"
-#include "scd4x_i2c.h"
 #include <stdio.h>
 
-/// I2C address
-static int addr = 0x62;
-
-// I2C Pins
-static uint sda_pin = 16;
-static uint scl_pin = 17;
-
-// This is the main entry for your c application. U
-// is
-int main() {
-
+int main(void) {
     stdio_init_all();
 
-    // Setup I2c using pins 16 & 17
-    i2c_init(i2c_default, 400 * 1000);
-    gpio_set_function(PICO_DEFAULT_I2C_SDA_PIN, GPIO_FUNC_I2C);
-    gpio_set_function(PICO_DEFAULT_I2C_SCL_PIN, GPIO_FUNC_I2C);
+    // Give us a few seconds to start viewing the output if we're plugged into
+    // the computer over USB.
+    sleep_ms(3000);
 
-    // This variable will hold the return status of the function calls.
-    // You can separate each function call result into their own variable or re
-    // - use this.
+    // Setup I2C using GPIO pins 12 & 13.
+    const uint desired_clock_hz = 400 * 1000;
+    const uint actual_baudrate = i2c_init(i2c_default, desired_clock_hz);
+    printf("The I2C baudrate is %u Hz\n", actual_baudrate);
+    const uint sda_pin = 12;
+    const uint scl_pin = 13;
+    gpio_set_function(sda_pin, GPIO_FUNC_I2C);
+    gpio_set_function(scl_pin, GPIO_FUNC_I2C);
+    gpio_pull_up(sda_pin);
+    gpio_pull_up(scl_pin);
 
-    int status = 0;
+    // Initialize driver with i2c address
+    scd4x_init(SCD41_I2C_ADDR_62);
 
-    // Stop any readings if occuring
+    int status;
+
+    // Stop any ongoing measurement.
     status = scd4x_stop_periodic_measurement();
+    if (status) {
+        printf("Unable to stop measurement. Error: %d\n", status);
+        return status;
+    }
 
-    // Perform self test
-    uint16_t* selfTest = 0;
-    scd4x_perform_self_test(selfTest);
-
-    // Get Serial number 3 parts
-    uint16_t one;
-    uint16_t two;
-    uint16_t three;
-
-    scd4x_get_serial_number(&one, &two, &three);
+    // Get serial number.
+    uint16_t serial_number[3] = {0};
+    status = scd4x_get_serial_number(serial_number, 3);
+    if (status) {
+        printf("Unable to get sensor serial number. Error: %d\n", status);
+        return status;
+    }
+    printf("Sensor serial number is: 0x%x 0x%x 0x%x\n", (int)serial_number[0],
+           (int)serial_number[1], (int)serial_number[2]);
 
     // Start the readings.
-    status1 = scd4x_start_periodic_measurement();
+    status = scd4x_start_periodic_measurement();
+    if (status) {
+        printf("Unable to start periodic measurement. Error %d\n", status);
+        return status;
+    }
 
-    while (1) {
-
-        // Check if data is ready to read
+    for (;;) {
+        // Wait for the measurement to complete.
+        sleep_ms(5000 - 10);
         bool dataReady;
-        while (dataReady == false) {
+        do {
+            sleep_ms(10);
+            status = scd4x_get_data_ready_status(&dataReady);
+            if (status) {
+                printf("Unable to get sensor readiness status. Error %d.\n",
+                       status);
+                return status;
+            }
+        } while (!dataReady);
 
-            status1 = scd4x_get_data_ready_flag(&dataReady);
+        // Read the measurement data and convert it to common units.
+        uint16_t co2Raw;         // ppm
+        int32_t temperatureRaw;  // millicelsius
+        int32_t humidityRaw;     // millipercent
+        status = scd4x_read_measurement(&co2Raw, &temperatureRaw, &humidityRaw);
+        if (status) {
+            printf("Unable to read measurement data. Error: %d\n", status);
+            return status;
         }
 
-        // Get the ticks. The scd4x_read_measurement function is giving
-        // incorrect data due to the arthimetic
-        uint16_t co2;
-        uint16_t temp;
-        uint16_t humidity;
-        status1 = scd4x_read_measurement_ticks(&co2, &temp, &humidity);
+        const int co2Ppm = co2Raw;
+        const float temperatureCelsius = temperatureRaw / 1000.0f;
+        const float temperatureFahrenheit = temperatureCelsius * 1.8f + 32;
+        const float humidityPercent = humidityRaw / 1000.0f;
 
-        // Arithemtic to change raw data into information
-        int tempInCelsius = -45 + 175 * temp / 65536;
-        int tempInFarenheit = tempInCelsius * 1.8 + 32;
-        int humidityPercent = 100 * humidity / 65536;
-
-        // Print results to terminal (output)
-        printf("C:%d,T:%d,H:%d", co2, tempInFarenheit, humidityPercent);
-
-        // Sleep for 5 seconds.
-        sleep_ms(5000);
+        printf("CO2: %d ppm, Temperature: %.1f C (%.1f F), Humidity: %.1f%%\n",
+               co2Ppm, temperatureCelsius, temperatureFahrenheit,
+               humidityPercent);
     }
 }
