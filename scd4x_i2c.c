@@ -100,24 +100,27 @@ int16_t scd4x_get_data_ready_status(bool* arg_0) {
 }
 
 int16_t scd4x_get_sensor_variant(scd4x_sensor_variant* a_sensor_variant) {
+    scd4x_sensor_variant ret_val = SCD4X_SENSOR_VARIANT_MASK;
     uint16_t raw_sensor_variant = 0;
+    uint16_t my_sensor_variant = 0;
     int16_t local_error = 0;
+    ret_val = SCD4X_SENSOR_VARIANT_MASK;
+    uint16_t mask = (uint16_t)(ret_val);
     local_error = scd4x_get_sensor_variant_raw(&raw_sensor_variant);
     if (local_error != NO_ERROR) {
         return local_error;
     }
-    uint16_t variant = (uint16_t)(raw_sensor_variant & 4);
-    if (variant == 0) {
-        *a_sensor_variant = SCD4X_SENSOR_VARIANT_SCD40;
-        ;
-        return local_error;
-    } else if (variant == 1) {
-        *a_sensor_variant = SCD4X_SENSOR_VARIANT_SCD41;
-        ;
-        return local_error;
+    my_sensor_variant = (uint16_t)(raw_sensor_variant & mask);
+    if (my_sensor_variant == (uint16_t)(SCD4X_SENSOR_VARIANT_SCD40)) {
+        ret_val = SCD4X_SENSOR_VARIANT_SCD40;
+    } else if (my_sensor_variant == (uint16_t)(SCD4X_SENSOR_VARIANT_SCD41)) {
+        ret_val = SCD4X_SENSOR_VARIANT_SCD41;
+    } else if (my_sensor_variant == (uint16_t)(SCD4X_SENSOR_VARIANT_SCD42)) {
+        ret_val = SCD4X_SENSOR_VARIANT_SCD42;
+    } else if (my_sensor_variant == (uint16_t)(SCD4X_SENSOR_VARIANT_SCD43)) {
+        ret_val = SCD4X_SENSOR_VARIANT_SCD43;
     }
-    *a_sensor_variant = SCD4X_SENSOR_VARIANT_UNKNOWN;
-    ;
+    *a_sensor_variant = ret_val;
     return local_error;
 }
 
