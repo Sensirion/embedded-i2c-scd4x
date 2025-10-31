@@ -1,3 +1,5 @@
+#include "hardware/i2c.h"
+#include "pico/stdlib.h"
 /*
  * Copyright (c) 2018, Sensirion AG
  * All rights reserved.
@@ -29,12 +31,57 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include "../../sensirion_i2c_hal.h"
-#include "../../sensirion_common.h"
-#include "../../sensirion_config.h"
+#include "sensirion_common.h"
+#include "sensirion_config.h"
+#include "sensirion_i2c_hal.h"
 
-#include <hardware/i2c.h>
-#include <pico/time.h>
+#define I2C_PORT i2c0
+#define PIN_I2C_SDA 4
+#define PIN_I2C_SCL 5
+
+/**
+ * Select the current i2c bus by index.
+ * All following i2c operations will be directed at that bus.
+ *
+ * THE IMPLEMENTATION IS OPTIONAL ON SINGLE-BUS SETUPS (all sensors on the same
+ * bus)
+ *
+ * @param bus_idx   Bus index to select
+ * @returns         0 on success, an error code otherwise
+ */
+int16_t sensirion_i2c_hal_select_bus(uint8_t bus_idx) {
+    /* TODO:IMPLEMENT or leave empty if all sensors are located on one single
+     * bus
+     */
+    return NOT_IMPLEMENTED_ERROR;
+}
+
+/**
+ * Initialize all hard- and software components that are needed for the I2C
+ * communication.
+ */
+void sensirion_i2c_hal_init(void) {
+    stdio_init_all();
+
+    // I2C Initialisation. Using it at 400Khz.
+    i2c_init(I2C_PORT, 400 * 1000);
+
+    gpio_set_function(PIN_I2C_SDA, GPIO_FUNC_I2C);
+    gpio_set_function(PIN_I2C_SCL, GPIO_FUNC_I2C);
+    gpio_pull_up(PIN_I2C_SDA);
+    gpio_pull_up(PIN_I2C_SCL);
+}
+
+/**
+ * Release all resources initialized by sensirion_i2c_hal_init().
+ */
+void sensirion_i2c_hal_free(void) {
+    i2c_deinit(I2C_PORT);
+    gpio_set_function(PIN_I2C_SDA, GPIO_FUNC_NULL);
+    gpio_set_function(PIN_I2C_SCL, GPIO_FUNC_NULL);
+    gpio_disable_pulls(PIN_I2C_SDA);
+    gpio_disable_pulls(PIN_I2C_SCL);
+}
 
 /**
  * Execute one read transaction on the I2C bus, reading a given number of bytes.
@@ -47,9 +94,12 @@
  * @returns 0 on success, error code otherwise
  */
 int8_t sensirion_i2c_hal_read(uint8_t address, uint8_t* data, uint8_t count) {
-    const bool nostop =
-        true;  // master retains control of the bus after the read
-    return !i2c_read_blocking(i2c_default, address, data, count, nostop);
+    int status = i2c_read_blocking(i2c_default, address, data, count, false);
+
+    if (status <= 0)
+        return 1;
+    else
+        return 0;
 }
 
 /**
@@ -65,9 +115,13 @@ int8_t sensirion_i2c_hal_read(uint8_t address, uint8_t* data, uint8_t count) {
  */
 int8_t sensirion_i2c_hal_write(uint8_t address, const uint8_t* data,
                                uint8_t count) {
-    const bool nostop =
-        true;  // master retains control of the bus after the write
-    return !i2c_write_blocking(i2c_default, address, data, count, nostop);
+    // I2C Default is used (I2C0).
+    int status = i2c_write_blocking(i2c_default, address, data, count, true);
+
+    if (status <= 0)
+        return 1;
+    else
+        return 0;
 }
 
 /**
@@ -76,8 +130,8 @@ int8_t sensirion_i2c_hal_write(uint8_t address, const uint8_t* data,
  *
  * Despite the unit, a <10 millisecond precision is sufficient.
  *
- * @param microseconds the sleep time in microseconds
+ * @param useconds the sleep time in microseconds
  */
-void sensirion_i2c_hal_sleep_usec(uint32_t microseconds) {
-    sleep_us(microseconds);
+void sensirion_i2c_hal_sleep_usec(uint32_t useconds) {
+    sleep_ms(useconds / 1000);
 }

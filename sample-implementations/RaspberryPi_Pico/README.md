@@ -1,39 +1,33 @@
-SCD4x on the Raspberry Pi Pico
-==============================
-<img alt="Pico W with an SCD41 connected" src="hardware.jpg" height="400"/>
+### Project Setup
 
-In this example, an SCD41 is connected to a Raspberry Pi Pico W on GPIO pins 12
-(I2C0 SDA) and 13 (I2C0 SCL). The same code will work for any variant of the
-Pico.
+To program the Raspberry Pi Pico, we use the Raspberry Pi Pico VS Code extension. 
 
-The following shell session is from an Ubuntu machine that had the Pico plugged
-in to USB in boot select mode.
+Follow these instructions to flash the example:
 
-```console
-$ ls
-CMakeLists.txt  hardware.jpg  main.c  README.md  sensirion_i2c_hal.c
+1. Open the Raspberry Pi Pico VS Code extension and create a new **C/C++ project**.
+2. Select your board type.
+3. Enable the **I2C interface** feature.
+4. Enable **Console over USB**.
+5. Click **Create**.
+6. Copy all driver .h and .c files into the new pico project.
+7. Copy the example usage into the pico project
+8. Replace the sensirion_i2c_hal.c file with the file from the Raspberry Pi Pico sample implementation
+9. In your CMakeLists.txt, replace the add_executable block with:
+    ```cmake
+    add_executable(<project_name>
+        scd4x_i2c_example_usage.c
+        sensirion_i2c.c
+        sensirion_i2c_hal.c
+        scd4x_i2c.c
+        sensirion_common.c
+    )
+    ```
+10. Replace <project_name> with your project name
+11. Connect your sensor and flash the firmware.
 
-$ mkdir build
+Once flashed successfully, the Raspberry Pi Pico will print sensor readings over the USB serial console.
 
-$ cd build
+### Connecting the Sensor
 
-$ cmake -DPICO_SDK_PATH=$HOME/src/pico-sdk ..
-[...]
-
-$ make -j
-[...]
-
-$ ls
-CMakeCache.txt  cmake_install.cmake  generated  main.dis  main.elf.map  main.uf2  pico-sdk
-CMakeFiles      elf2uf2              main.bin   main.elf  main.hex      Makefile  pioasm
-
-$ cp main.uf2 /media/$USER/RPI-RP2
-
-$ screen /dev/ttyACM0
-The I2C baudrate is 399361 Hz
-Sensor serial number is: 0x8a7e 0xbb07 0x3ba0
-CO2: 1111 ppm, Temperature: 28.4 C (83.1 F), Humidity: 60.4%
-CO2: 1080 ppm, Temperature: 28.5 C (83.2 F), Humidity: 61.1%
-CO2: 1070 ppm, Temperature: 28.4 C (83.1 F), Humidity: 61.7%
-[...]
-```
+- SDA: GPIO4 (Pin 6)
+- SCL: GPIO5 (Pin 7)
