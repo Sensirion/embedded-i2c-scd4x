@@ -2,9 +2,9 @@
 
 This document explains how to set up a sensor of the SCD4X family to run on an embedded device using the I²C interface.
 
-<img src="images/SCD41.png" width="300px">
+<img src="images/SCD4x.png" width="300px">
 
-Click [here](https://sensirion.com/products/catalog/SEK-SCD41) to learn more about the Sensirion SCD4X sensor family.
+Click [here](https://sensirion.com/products/catalog/SEK-SCD43) to learn more about the Sensirion SCD4X sensor family.
 
 
 Not all sensors of this driver family support all measurements.
@@ -19,9 +19,10 @@ support it are listed in the API description.
 | ------------- | -------------- |
 |[SCD40](https://sensirion.com/products/catalog/SCD40)| **0x62**|
 |[SCD41](https://sensirion.com/products/catalog/SCD41)| **0x62**|
+|[SCD42](https://sensirion.com/products/catalog/SCD42)| **0x62**|
 |[SCD43](https://sensirion.com/products/catalog/SCD43)| **0x62**|
 
-The following instructions and examples use a *SCD41*.
+The following instructions and examples use a *SCD43*.
 
 
 
@@ -29,17 +30,17 @@ The following instructions and examples use a *SCD41*.
 
 ### Connect the Sensor
 
-Your sensor has 4 pins that need to be connected to your board: SCL, GND, VDD, SDA.
+Your sensor has 4 pins that need to be connected to your board: GND, VDD, SDA, SCL.
 Use the following description to connect your SCD4X:
 
-<img src="images/SCD41_pinout.png" width="300px">
+<img src="images/SCD4x_pinout.png" width="300px">
 
 | *Pin* | *Cable Color* | *Name* | *Description*  | *Comments* |
 |-------|---------------|:------:|----------------|------------|
-| 1 | yellow | SCL | I2C: Serial clock input |
-| 2 | black | GND | Ground |
-| 3 | red | VDD | Supply Voltage | 2.4V to 5.5V
-| 4 | green | SDA | I2C: Serial data input / output |
+| 1 | black | GND | Ground |
+| 2 | red | VDD | Supply Voltage | 2.4V to 5.5V
+| 3 | green or blue | SDA | I2C: Serial data input / output |
+| 4 | yellow | SCL | I2C: Serial clock input |
 
 
 
@@ -90,7 +91,7 @@ detailed template where you just need to fill in your system specific values.
 
 ## Choose the i2c address to use with your product
 
-The provided example is working with a SCD41, I²C address 0x62.
+The provided example is working with a SCD43, I²C address 0x62.
 In order to use the code with another product or I²C address you need to change it in the call scd4x_init(ADDRESS) in
 `scd4x_i2c_example_usage.c`. The list of supported I²C-addresses is found in the header
 `scd4x_i2c.h`.
