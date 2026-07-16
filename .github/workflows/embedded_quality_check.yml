@@ -8,3 +8,4 @@ on:
 jobs:
   driver-quality:
     uses: sensirion/.github/.github/workflows/driver.c.check.yml@main
+
